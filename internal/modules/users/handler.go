@@ -3,7 +3,7 @@ package users
 import (
 	"net/http"
 
-	"gym-api/errors"
+	"gym-api/internal/errors"
 
 	"github.com/gin-gonic/gin"
 )

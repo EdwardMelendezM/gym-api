@@ -1,9 +1,12 @@
 package main
 
 import (
-	middleware "gym-api/middlware"
-	"gym-api/modules/users"
 	"net/http"
+	"os"
+
+	"gym-api/internal/database"
+	"gym-api/internal/middlware"
+	users2 "gym-api/internal/modules/users"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,6 +14,14 @@ import (
 func main() {
 	// Create Gin engine (modern default: logger + recovery)
 	r := gin.Default()
+
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		panic("DATABASE_URL environment variable is not set")
+	}
+
+	// Database
+	client := database.NewEntClient(dsn)
 
 	// middlewares base
 	r.Use(gin.Recovery())
@@ -21,11 +32,11 @@ func main() {
 	v1 := api.Group("/v1")
 
 	// dependencies
-	repo := users.NewRepository()
-	service := users.NewService(repo)
+	userRepo := users2.NewEntRepository(client)
+	userService := users2.NewService(userRepo)
 
 	// routes
-	users.RegisterRoutes(v1, service)
+	users2.RegisterRoutes(v1, userService)
 
 	// Simple test endpoint
 	r.GET("/health", func(c *gin.Context) {

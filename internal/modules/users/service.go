@@ -1,6 +1,6 @@
 package users
 
-import "gym-api/errors"
+import "gym-api/internal/errors"
 
 type Service interface {
 	ListUsers() ([]User, error)
