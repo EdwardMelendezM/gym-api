@@ -104,3 +104,30 @@ func (r *entRepository) FindByEmail(email string) (User, error) {
 		UpdatedAt: row.UpdatedAt,
 	}, nil
 }
+
+func (r *entRepository) FindById(id string) (User, error) {
+	row, err := r.client.User.
+		Query().
+		Where(user.IDEQ(id)).
+		Only(context.Background())
+
+	if err != nil {
+		return User{}, errors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("users.repository").
+			SetFunction("FindById").
+			SetMessage("failed to find by email").
+			SetError(err)
+	}
+
+	return User{
+		ID:        row.ID,
+		FirstName: row.FirstName,
+		LastName:  row.LastName,
+		FullName:  row.FullName,
+		Email:     row.Email,
+		Password:  row.Password,
+		CreatedAt: row.CreatedAt,
+		UpdatedAt: row.UpdatedAt,
+	}, nil
+}

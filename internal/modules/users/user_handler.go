@@ -1,6 +1,7 @@
 package users
 
 import (
+	"gym-api/internal/modules/shared/utils"
 	"net/http"
 
 	"gym-api/internal/errors"
@@ -51,6 +52,55 @@ func (h *Handler) Create(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, UserResponse{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+	})
+}
+
+func (h *Handler) GetById(c *gin.Context) {
+	id := c.Param("id")
+
+	if id == "" {
+		errors.Respond(c, errors.New().
+			SetStatus(http.StatusBadRequest).
+			SetLayer("users.handler").
+			SetFunction("GetById").
+			SetMessage("id parameter is required"))
+		return
+	}
+
+	user, err := h.service.GetUserById(id)
+	if err != nil {
+		errors.Respond(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, UserResponse{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+	})
+}
+
+func (h *Handler) GetMe(c *gin.Context) {
+	session, ok := utils.GetSession(c)
+	if !ok {
+		errors.Respond(c, errors.New().
+			SetStatus(http.StatusUnauthorized).
+			SetMessage("user not authenticated"))
+		return
+	}
+
+	user, err := h.service.GetUserById(session.UserID)
+	if err != nil {
+		errors.Respond(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, UserResponse{
 		ID:        user.ID,
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
