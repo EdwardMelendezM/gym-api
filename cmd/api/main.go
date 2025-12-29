@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	"gym-api/internal/database"
@@ -27,6 +28,12 @@ func main() {
 	client := database.NewEntClient(dsn)
 
 	// middlewares base
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"https://mi-frontend.com"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	}))
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestLogger())
 	r.Use(middleware.ErrorHandler())

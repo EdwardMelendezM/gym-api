@@ -12,6 +12,8 @@ import (
 	"gym-api/internal/modules/shared/utils"
 )
 
+const sessionKey = "session"
+
 func AuthMiddleware(sessions sessions.SessionRepository) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		header := c.GetHeader("Authorization")
@@ -39,7 +41,7 @@ func AuthMiddleware(sessions sessions.SessionRepository) gin.HandlerFunc {
 			return
 		}
 
-		c.Set("session", session)
+		c.Set(sessionKey, session)
 		c.Next()
 	}
 }

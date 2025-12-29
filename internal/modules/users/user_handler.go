@@ -19,9 +19,10 @@ func NewUserHandler(service Service) *Handler {
 }
 
 func (h *Handler) List(c *gin.Context) {
+	ctx := c.Request.Context()
 	p := c.MustGet(pagination.Key).(pagination.Params)
 
-	result, err := h.service.ListUsers(p)
+	result, err := h.service.ListUsers(ctx, p)
 	if err != nil {
 		errors.Respond(c, err)
 		return

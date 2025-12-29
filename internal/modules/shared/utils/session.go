@@ -6,8 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const sessionKey = "session"
+
 func GetSession(c *gin.Context) (*sessions.Session, bool) {
-	s, exists := c.Get("session")
+	s, exists := c.Get(sessionKey)
 	if !exists {
 		return nil, false
 	}

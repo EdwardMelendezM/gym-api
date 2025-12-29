@@ -24,9 +24,7 @@ func NewUserEntRepository(client *ent.Client) Repository {
 	return &entRepository{client: client}
 }
 
-func (r *entRepository) GetAll(p pagination.Params) ([]*ent.User, int, error) {
-	ctx := context.Background()
-
+func (r *entRepository) GetAll(ctx context.Context, p pagination.Params) ([]*ent.User, int, error) {
 	query := r.client.User.Query()
 
 	// 🔍 SEARCH
