@@ -1,4 +1,5 @@
-h1:zZmR21TwxhdXO0FDrtxikkzP5yKKgWNTuFCVxLwF8wg=
+h1:reEVrXboqK1qIMb1bZg2+PcfbWA33UFed3w4ZMrTL4k=
 20251229021212_init.sql h1:iLjopanXKP9AHN6Nw9Ngji7yy6PgyUOhVliPtwIvYVs=
 20251229021658_add_fisrt_and_last_name.sql h1:+8alcAqiIn94iyyTfIYNV2ogKvmvQ4ybEWLq4O+HNig=
 20251229022315_delete_name_field_of_user_table.sql h1:e96uUeGu7DLvrbEbeECerMKu5rkphNpo0lsIjM7/8pk=
+20251229023642_add_password_field_in_user_table.sql h1:GhpFoklSXxlJPvGabLI7n9S3sHFbwK8FdOq2Y7PE8/Y=

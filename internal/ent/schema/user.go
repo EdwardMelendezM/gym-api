@@ -21,17 +21,23 @@ func (User) Fields() []ent.Field {
 			Immutable(),
 
 		field.String("fullName").
+			Optional().
 			Nillable(),
 
 		field.String("firstName").
+			Optional().
 			Nillable(),
 
 		field.String("lastName").
+			Optional().
 			Nillable(),
 
 		field.String("email").
 			Unique().
 			NotEmpty(),
+
+		field.String("password").
+			Sensitive(),
 
 		field.Time("created_at").
 			Default(time.Now),
