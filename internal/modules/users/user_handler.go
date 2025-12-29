@@ -1,6 +1,7 @@
 package users
 
 import (
+	"gym-api/internal/modules/shared/pagination"
 	"gym-api/internal/modules/shared/utils"
 	"net/http"
 
@@ -18,23 +19,15 @@ func NewUserHandler(service Service) *Handler {
 }
 
 func (h *Handler) List(c *gin.Context) {
-	users, err := h.service.ListUsers()
+	p := c.MustGet(pagination.Key).(pagination.Params)
+
+	result, err := h.service.ListUsers(p)
 	if err != nil {
 		errors.Respond(c, err)
 		return
 	}
 
-	response := make([]UserResponse, 0, len(users))
-	for _, u := range users {
-		response = append(response, UserResponse{
-			ID:        u.ID,
-			FirstName: u.FirstName,
-			LastName:  u.LastName,
-			Email:     u.Email,
-		})
-	}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, result)
 }
 
 func (h *Handler) Create(c *gin.Context) {
@@ -90,6 +83,7 @@ func (h *Handler) GetMe(c *gin.Context) {
 	if !ok {
 		errors.Respond(c, errors.New().
 			SetStatus(http.StatusUnauthorized).
+			SetLayer("users.handler").
 			SetMessage("user not authenticated"))
 		return
 	}

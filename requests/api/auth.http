@@ -1,4 +1,4 @@
-### Register (create user + password)
+### Register
 POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
@@ -20,8 +20,3 @@ Content-Type: application/json
   "password": "12345678"
 }
 
-###
-
-### Example: Access protected route (replace TOKEN)
-GET http://localhost:8080/api/v1/me
-Authorization: Bearer {{TOKEN}}

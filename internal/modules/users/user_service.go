@@ -2,11 +2,13 @@ package users
 
 import (
 	"gym-api/internal/errors"
+	"gym-api/internal/modules/shared/pagination"
+	"math"
 	"net/http"
 )
 
 type Service interface {
-	ListUsers() ([]User, error)
+	ListUsers(p pagination.Params) (*pagination.Result[UserResponse], error)
 	CreateUser(input CreateUserRequest) (User, error)
 	GetUserById(id string) (User, error)
 }
@@ -19,8 +21,33 @@ func NewUserService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s *service) ListUsers() ([]User, error) {
-	return s.repo.GetAll()
+func (s *service) ListUsers(p pagination.Params) (*pagination.Result[UserResponse], error) {
+	users, total, err := s.repo.GetAll(p)
+	if err != nil {
+		return nil, err
+	}
+
+	out := make([]UserResponse, 0, len(users))
+	for _, u := range users {
+		out = append(out, UserResponse{
+			ID:        u.ID,
+			FirstName: u.FirstName,
+			LastName:  u.LastName,
+			Email:     u.Email,
+		})
+	}
+
+	totalPages := int(math.Ceil(float64(total) / float64(p.PageSize)))
+
+	return &pagination.Result[UserResponse]{
+		Data: out,
+		Meta: pagination.Meta{
+			Page:       p.Page,
+			PageSize:   p.PageSize,
+			Total:      total,
+			TotalPages: totalPages,
+		},
+	}, nil
 }
 
 func (s *service) CreateUser(input CreateUserRequest) (User, error) {
