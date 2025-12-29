@@ -52,3 +52,22 @@ func (h *Handler) Login(c *gin.Context) {
 		RefreshToken: result.RefreshToken,
 	})
 }
+
+func (h *Handler) RefreshToken(c *gin.Context) {
+	var input RefreshTokenRequest
+	if err := c.ShouldBindJSON(&input); err != nil {
+		errors.Respond(c, err)
+		return
+	}
+
+	result, err := h.service.RefreshToken(input)
+	if err != nil {
+		errors.Respond(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, AuthResponse{
+		AccessToken:  result.AccessToken,
+		RefreshToken: result.RefreshToken,
+	})
+}

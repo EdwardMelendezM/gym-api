@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"log"
 
 	"gym-api/internal/ent"
@@ -15,9 +14,9 @@ func NewEntClient(dsn string) *ent.Client {
 		log.Fatalf("failed opening connection: %v", err)
 	}
 
-	if err := client.Schema.Create(context.Background()); err != nil {
-		log.Fatalf("failed creating schema: %v", err)
-	}
+	//if errCreated := client.Schema.Create(context.Background()); errCreated != nil {
+	//	log.Fatalf("failed creating schema: %v", err)
+	//}
 
 	return client
 }

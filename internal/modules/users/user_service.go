@@ -2,10 +2,11 @@ package users
 
 import (
 	"context"
-	"gym-api/internal/errors"
-	"gym-api/internal/modules/shared/pagination"
 	"math"
 	"net/http"
+
+	"gym-api/internal/errors"
+	"gym-api/internal/modules/shared/pagination"
 )
 
 type Service interface {

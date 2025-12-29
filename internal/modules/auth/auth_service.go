@@ -15,6 +15,7 @@ import (
 type AuthService interface {
 	Register(input RegisterRequest) (TokenResponse, error)
 	Login(input LoginRequest) (TokenResponse, error)
+	RefreshToken(input RefreshTokenRequest) (TokenResponse, error)
 }
 
 type service struct {
@@ -43,8 +44,11 @@ func (s *service) Register(input RegisterRequest) (TokenResponse, error) {
 			SetError(err)
 	}
 
+	fullName := input.FirstName + " " + input.LastName
+
 	user, err := s.users.Create(users.User{
 		FirstName: &input.FirstName,
+		FullName:  &fullName,
 		LastName:  &input.LastName,
 		Email:     input.Email,
 		Password:  hash,
@@ -161,6 +165,59 @@ func (s *service) Login(input LoginRequest) (TokenResponse, error) {
 			SetStatus(http.StatusInternalServerError).
 			SetLayer("auth.service").
 			SetFunction("Login").
+			SetMessage("failed to generate refresh token").
+			SetError(err)
+	}
+
+	tokenResponse := TokenResponse{
+		token,
+		tokenRefresh,
+	}
+	return tokenResponse, nil
+}
+
+func (s *service) RefreshToken(input RefreshTokenRequest) (TokenResponse, error) {
+	result, err := utils2.ParseToken(input.RefreshToken)
+	if err != nil {
+		return TokenResponse{}, appErrors.New().
+			SetStatus(http.StatusUnauthorized).
+			SetLayer("auth.service").
+			SetFunction("RefreshToken").
+			SetMessage("invalid refresh token").
+			SetError(err)
+	}
+
+	session, err := s.sessions.FindByID(result.SessionID)
+	if err != nil {
+		return TokenResponse{}, appErrors.New().
+			SetStatus(http.StatusUnauthorized).
+			SetLayer("auth.service").
+			SetFunction("RefreshToken").
+			SetMessage("invalid refresh token").
+			SetError(err)
+	}
+
+	// One hour expiration
+	expiresAtToken := 1 * time.Hour
+	// One day expiration
+	expiresAtRefresh := 24 * time.Hour
+
+	token, errToken := utils2.GenerateToken(session.ID, expiresAtToken)
+	if errToken != nil {
+		return TokenResponse{}, appErrors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("auth.service").
+			SetFunction("RefreshToken").
+			SetMessage("failed to generate access token").
+			SetError(err)
+	}
+
+	tokenRefresh, errTokenRefresh := utils2.GenerateToken(session.ID, expiresAtRefresh)
+	if errTokenRefresh != nil {
+		return TokenResponse{}, appErrors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("auth.service").
+			SetFunction("RefreshToken").
 			SetMessage("failed to generate refresh token").
 			SetError(err)
 	}
