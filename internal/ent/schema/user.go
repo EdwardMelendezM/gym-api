@@ -20,8 +20,14 @@ func (User) Fields() []ent.Field {
 			}).
 			Immutable(),
 
-		field.String("name").
-			NotEmpty(),
+		field.String("fullName").
+			Nillable(),
+
+		field.String("firstName").
+			Nillable(),
+
+		field.String("lastName").
+			Nillable(),
 
 		field.String("email").
 			Unique().

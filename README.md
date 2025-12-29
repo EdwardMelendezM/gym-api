@@ -8,7 +8,7 @@ curl -sSf https://atlasgo.sh | sh
 - Create a new migration
 ```sh
 atlas migrate diff init \
-  --to "ent://ent/schema" \
+  --to "ent://internal/ent/schema" \
   --dev-url "postgres://postgres:postgres@localhost:5666/postgres?sslmode=disable"
 ```
 
@@ -22,7 +22,7 @@ atlas migrate apply \
 - Create a new migration
 ```sh
 atlas migrate diff name_of_migration \
-  --to "ent://ent/schema" \
+  --to "ent://internal/ent/schema" \
   --dev-url "postgres://postgres:postgres@localhost:5666/postgres?sslmode=disable"
 ```
 
