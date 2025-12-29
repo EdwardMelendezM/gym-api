@@ -40,7 +40,7 @@ func (h *Handler) Create(c *gin.Context) {
 	var req CreateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		errors.Respond(c, errors.BadRequest("invalid request body"))
+		errors.Respond(c, err)
 		return
 	}
 

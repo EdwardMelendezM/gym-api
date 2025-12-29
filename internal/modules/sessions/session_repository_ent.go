@@ -2,8 +2,10 @@ package sessions
 
 import (
 	"context"
+	"net/http"
 
 	"gym-api/internal/ent"
+	"gym-api/internal/errors"
 )
 
 type sessionEntRepository struct {
@@ -23,7 +25,12 @@ func (r *sessionEntRepository) Create(s Session) (Session, error) {
 		Save(context.Background())
 
 	if err != nil {
-		return Session{}, err
+		return Session{}, errors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("sessions.repository").
+			SetFunction("Create").
+			SetMessage("failed to create session").
+			SetError(err)
 	}
 
 	return Session{
@@ -39,7 +46,12 @@ func (r *sessionEntRepository) FindByID(id string) (*Session, error) {
 		Get(context.Background(), id)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("sessions.repository").
+			SetFunction("FindByID").
+			SetMessage("failed to find by id session").
+			SetError(err)
 	}
 
 	return &Session{

@@ -1,6 +1,9 @@
 package users
 
-import "gym-api/internal/errors"
+import (
+	"gym-api/internal/errors"
+	"net/http"
+)
 
 type Service interface {
 	ListUsers() ([]User, error)
@@ -29,7 +32,11 @@ func (s *service) CreateUser(input CreateUserRequest) (User, error) {
 
 	created, err := s.repo.Create(user)
 	if err != nil {
-		return User{}, errors.Internal("could not create user")
+		return User{}, errors.New().
+			SetStatus(http.StatusBadRequest).
+			SetLayer("users.service").
+			SetFunction("CreateUser").
+			SetMessage(err.Error())
 	}
 
 	return created, nil

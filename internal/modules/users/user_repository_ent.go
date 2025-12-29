@@ -4,6 +4,9 @@ import (
 	"context"
 	"gym-api/internal/ent"
 	"gym-api/internal/ent/user"
+	"net/http"
+
+	"gym-api/internal/errors"
 )
 
 type entRepository struct {
@@ -19,7 +22,12 @@ func (r *entRepository) GetAll() ([]User, error) {
 		Query().
 		All(context.Background())
 	if err != nil {
-		return nil, err
+		return nil, errors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("users.repository").
+			SetFunction("GetAll").
+			SetMessage("failed to get all users").
+			SetError(err)
 	}
 
 	users := make([]User, 0, len(rows))
@@ -50,7 +58,12 @@ func (r *entRepository) Create(user User) (User, error) {
 		Save(context.Background())
 
 	if err != nil {
-		return User{}, err
+		return User{}, errors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("users.repository").
+			SetFunction("Create").
+			SetMessage("failed to insert user").
+			SetError(err)
 	}
 
 	return User{
@@ -72,7 +85,12 @@ func (r *entRepository) FindByEmail(email string) (User, error) {
 		Only(context.Background())
 
 	if err != nil {
-		return User{}, err
+		return User{}, errors.New().
+			SetStatus(http.StatusInternalServerError).
+			SetLayer("users.repository").
+			SetFunction("FindByEmail").
+			SetMessage("failed to find by email").
+			SetError(err)
 	}
 
 	return User{

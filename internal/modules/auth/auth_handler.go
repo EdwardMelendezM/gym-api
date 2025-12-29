@@ -18,7 +18,7 @@ func NewAuthHandler(service AuthService) *Handler {
 func (h *Handler) Register(c *gin.Context) {
 	var input RegisterRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
-		errors.Respond(c, errors.BadRequest("invalid request body"))
+		errors.Respond(c, err)
 		return
 	}
 
@@ -37,7 +37,7 @@ func (h *Handler) Register(c *gin.Context) {
 func (h *Handler) Login(c *gin.Context) {
 	var input LoginRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
-		errors.Respond(c, errors.BadRequest("invalid request body"))
+		errors.Respond(c, err)
 		return
 	}
 

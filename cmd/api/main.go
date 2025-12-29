@@ -29,6 +29,7 @@ func main() {
 	// middlewares base
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestLogger())
+	r.Use(middleware.ErrorHandler())
 	//r.Use(middleware.AuthMiddleware())
 
 	/// versioning
