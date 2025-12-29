@@ -1,4 +1,4 @@
-package auth
+package models
 
 type RegisterRequest struct {
 	FirstName string `json:"firstName"`

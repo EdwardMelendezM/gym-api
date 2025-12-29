@@ -1,17 +1,35 @@
 package main
 
 import (
+	"gym-api/internal/modules/shared/database"
+	middleware2 "gym-api/internal/modules/shared/middleware"
 	"net/http"
 	"os"
 
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
-
-	"gym-api/internal/database"
-	"gym-api/internal/middleware"
+	_ "gym-api/docs"
 	"gym-api/internal/modules/auth"
 	"gym-api/internal/modules/users"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title Gym API
+// @version 1.0
+// @description API de ejemplo para gestión de usuarios en un gym.
+// @termsOfService http://gym-api.local/terms/
+
+// @contact.name Edward
+// @contact.url http://gym-api.local
+// @contact.email edward@example.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8080
+// @BasePath /
 
 func main() {
 	// Create Gin engine (modern default: logger + recovery)
@@ -35,8 +53,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 	r.Use(gin.Recovery())
-	r.Use(middleware.RequestLogger())
-	r.Use(middleware.ErrorHandler())
+	r.Use(middleware2.RequestLogger())
+	r.Use(middleware2.ErrorHandler())
 	//r.Use(middleware.AuthMiddleware())
 
 	/// versioning
@@ -49,7 +67,7 @@ func main() {
 
 	// Protected
 	protected := v1.Group("/")
-	protected.Use(middleware.SetupAuthMiddleware(client))
+	protected.Use(middleware2.SetupAuthMiddleware(client))
 
 	users.SetupRoutes(protected, client)
 
@@ -59,6 +77,9 @@ func main() {
 			"status": "ok",
 		})
 	})
+
+	// Documentation route
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Start server
 	r.Run(":8080")

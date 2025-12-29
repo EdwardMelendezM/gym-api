@@ -1,9 +1,9 @@
 package users
 
 import (
-	"github.com/gin-gonic/gin"
+	paginationMiddleware "gym-api/internal/modules/shared/middleware"
 
-	paginationMiddleware "gym-api/internal/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 func UserRoutes(r *gin.RouterGroup, handler *Handler) {
