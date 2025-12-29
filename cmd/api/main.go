@@ -4,39 +4,45 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-gonic/gin"
+
 	"gym-api/internal/database"
 	"gym-api/internal/middlware"
-	users2 "gym-api/internal/modules/users"
-
-	"github.com/gin-gonic/gin"
+	"gym-api/internal/modules/auth"
+	"gym-api/internal/modules/users"
 )
 
 func main() {
 	// Create Gin engine (modern default: logger + recovery)
 	r := gin.Default()
 
+	// Database connection
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
 		panic("DATABASE_URL environment variable is not set")
 	}
-
-	// Database
+	//secret := os.Getenv("SECRET_KEY")
+	secret := "supersecretkey"
+	// Database client
 	client := database.NewEntClient(dsn)
 
 	// middlewares base
 	r.Use(gin.Recovery())
 	r.Use(middleware.RequestLogger())
+	//r.Use(middleware.AuthMiddleware())
 
-	// versioning
+	/// versioning
 	api := r.Group("/api")
 	v1 := api.Group("/v1")
 
-	// dependencies
-	userRepo := users2.NewEntRepository(client)
-	userService := users2.NewService(userRepo)
+	// Public
+	auth.SetupRoutes(v1, client)
 
-	// routes
-	users2.RegisterRoutes(v1, userService)
+	// Protected
+	protected := v1.Group("/")
+	protected.Use(middleware.AuthMiddleware(secret))
+
+	users.SetupRoutes(protected, client)
 
 	// Simple test endpoint
 	r.GET("/health", func(c *gin.Context) {

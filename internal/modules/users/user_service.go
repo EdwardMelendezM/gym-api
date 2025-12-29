@@ -11,7 +11,7 @@ type service struct {
 	repo Repository
 }
 
-func NewService(repo Repository) Service {
+func NewUserService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
@@ -21,8 +21,10 @@ func (s *service) ListUsers() ([]User, error) {
 
 func (s *service) CreateUser(input CreateUserRequest) (User, error) {
 	user := User{
-		Name:  input.Name,
-		Email: input.Email,
+		FirstName: &input.FirstName,
+		LastName:  &input.LastName,
+		Email:     input.Email,
+		Password:  input.Password,
 	}
 
 	created, err := s.repo.Create(user)
