@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"gym-api/internal/database"
-	"gym-api/internal/middlware"
+	"gym-api/internal/middleware"
 	"gym-api/internal/modules/auth"
 	"gym-api/internal/modules/users"
 )
@@ -22,7 +22,7 @@ func main() {
 		panic("DATABASE_URL environment variable is not set")
 	}
 	//secret := os.Getenv("SECRET_KEY")
-	secret := "supersecretkey"
+	//secret := "supersecretkey"
 	// Database client
 	client := database.NewEntClient(dsn)
 
@@ -36,11 +36,12 @@ func main() {
 	v1 := api.Group("/v1")
 
 	// Public
-	auth.SetupRoutes(v1, client)
+	authGroup := v1.Group("/auth")
+	auth.SetupRoutes(authGroup, client)
 
 	// Protected
 	protected := v1.Group("/")
-	protected.Use(middleware.AuthMiddleware(secret))
+	protected.Use(middleware.SetupAuthMiddleware(client))
 
 	users.SetupRoutes(protected, client)
 

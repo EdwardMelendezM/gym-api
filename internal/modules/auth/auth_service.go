@@ -11,8 +11,8 @@ import (
 )
 
 type AuthService interface {
-	Register(input RegisterRequest) (string, error)
-	Login(input LoginRequest) (string, error)
+	Register(input RegisterRequest) (TokenResponse, error)
+	Login(input LoginRequest) (TokenResponse, error)
 }
 
 type service struct {
@@ -30,10 +30,10 @@ func NewAuthService(
 	}
 }
 
-func (s *service) Register(input RegisterRequest) (string, error) {
+func (s *service) Register(input RegisterRequest) (TokenResponse, error) {
 	hash, err := utils2.HashPassword(input.Password)
 	if err != nil {
-		return "", err
+		return TokenResponse{}, err
 	}
 
 	user, err := s.users.Create(users.User{
@@ -43,7 +43,7 @@ func (s *service) Register(input RegisterRequest) (string, error) {
 		Password:  hash,
 	})
 	if err != nil {
-		return "", err
+		return TokenResponse{}, err
 	}
 
 	session := sessions.Session{
@@ -53,21 +53,59 @@ func (s *service) Register(input RegisterRequest) (string, error) {
 	}
 	created, err := s.sessions.Create(session)
 	if err != nil {
-		return "", err
+		return TokenResponse{}, err
 	}
 
-	return utils2.GenerateToken(created.ID)
+	// One day expiration
+	expiresAtToken := 1 * time.Hour
+	// One day expiration
+	expiresAtRefresh := 24 * time.Hour
+
+	token, errToken := utils2.GenerateToken(created.ID, expiresAtToken)
+	if errToken != nil {
+		return TokenResponse{}, errToken
+	}
+
+	tokenRefresh, errTokenRefresh := utils2.GenerateToken(created.ID, expiresAtRefresh)
+	if errTokenRefresh != nil {
+		return TokenResponse{}, errTokenRefresh
+	}
+
+	tokenResponse := TokenResponse{
+		token,
+		tokenRefresh,
+	}
+	return tokenResponse, nil
 }
 
-func (s *service) Login(input LoginRequest) (string, error) {
+func (s *service) Login(input LoginRequest) (TokenResponse, error) {
 	user, err := s.users.FindByEmail(input.Email)
 	if err != nil {
-		return "", errors.New("invalid credentials")
+		return TokenResponse{}, errors.New("invalid credentials")
 	}
 
 	if !utils2.ComparePassword(user.Password, input.Password) {
-		return "", errors.New("invalid credentials")
+		return TokenResponse{}, errors.New("invalid credentials")
 	}
 
-	return utils2.GenerateToken(user.ID)
+	// One hour expiration
+	expiresAtToken := 1 * time.Hour
+	// One day expiration
+	expiresAtRefresh := 24 * time.Hour
+
+	token, errToken := utils2.GenerateToken(user.ID, expiresAtToken)
+	if errToken != nil {
+		return TokenResponse{}, errToken
+	}
+
+	tokenRefresh, errTokenRefresh := utils2.GenerateToken(user.ID, expiresAtRefresh)
+	if errTokenRefresh != nil {
+		return TokenResponse{}, errTokenRefresh
+	}
+
+	tokenResponse := TokenResponse{
+		token,
+		tokenRefresh,
+	}
+	return tokenResponse, nil
 }

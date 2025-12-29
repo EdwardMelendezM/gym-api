@@ -22,13 +22,16 @@ func (h *Handler) Register(c *gin.Context) {
 		return
 	}
 
-	token, err := h.service.Register(input)
+	result, err := h.service.Register(input)
 	if err != nil {
 		errors.Respond(c, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, AuthResponse{AccessToken: token})
+	c.JSON(http.StatusCreated, AuthResponse{
+		AccessToken:  result.AccessToken,
+		RefreshToken: result.RefreshToken,
+	})
 }
 
 func (h *Handler) Login(c *gin.Context) {
@@ -38,11 +41,14 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := h.service.Login(input)
+	result, err := h.service.Login(input)
 	if err != nil {
 		errors.Respond(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, AuthResponse{AccessToken: token})
+	c.JSON(http.StatusCreated, AuthResponse{
+		AccessToken:  result.AccessToken,
+		RefreshToken: result.RefreshToken,
+	})
 }

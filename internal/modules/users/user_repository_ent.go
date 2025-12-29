@@ -59,6 +59,7 @@ func (r *entRepository) Create(user User) (User, error) {
 		LastName:  row.LastName,
 		FullName:  row.FullName,
 		Email:     row.Email,
+		Password:  row.Password,
 		CreatedAt: row.CreatedAt,
 		UpdatedAt: row.UpdatedAt,
 	}, nil
@@ -80,6 +81,7 @@ func (r *entRepository) FindByEmail(email string) (User, error) {
 		LastName:  row.LastName,
 		FullName:  row.FullName,
 		Email:     row.Email,
+		Password:  row.Password,
 		CreatedAt: row.CreatedAt,
 		UpdatedAt: row.UpdatedAt,
 	}, nil

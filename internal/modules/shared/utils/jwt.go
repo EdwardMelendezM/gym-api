@@ -13,11 +13,11 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(sessionID string) (string, error) {
+func GenerateToken(sessionID string, expiresAt time.Duration) (string, error) {
 	claims := Claims{
 		SessionID: sessionID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiresAt)),
 		},
 	}
 

@@ -1,13 +1,15 @@
 package middleware
 
 import (
-	"gym-api/internal/modules/sessions"
-	"gym-api/internal/modules/shared/utils"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+
+	"gym-api/internal/ent"
+	"gym-api/internal/modules/sessions"
+	"gym-api/internal/modules/shared/utils"
 )
 
 func AuthMiddleware(sessions sessions.SessionRepository) gin.HandlerFunc {
@@ -40,4 +42,9 @@ func AuthMiddleware(sessions sessions.SessionRepository) gin.HandlerFunc {
 		c.Set("session", session)
 		c.Next()
 	}
+}
+
+func SetupAuthMiddleware(client *ent.Client) gin.HandlerFunc {
+	sessionRepository := sessions.NewSessionEntRepository(client)
+	return AuthMiddleware(sessionRepository)
 }
