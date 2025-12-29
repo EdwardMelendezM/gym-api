@@ -1,11 +1,11 @@
 package impl
 
 import (
+	models2 "gym-api/internal/modules/sessions/models"
 	"net/http"
 	"time"
 
 	"gym-api/internal/modules/auth/models"
-	"gym-api/internal/modules/sessions"
 	"gym-api/internal/modules/shared/errors"
 	"gym-api/internal/modules/shared/utils"
 	"gym-api/internal/modules/users"
@@ -43,7 +43,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 	}
 
 	// Create session
-	session := sessions.Session{
+	session := models2.Session{
 		ID:        uuid.NewString(),
 		UserID:    user.ID,
 		ExpiresAt: time.Now().Add(24 * time.Hour),
