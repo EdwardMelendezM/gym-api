@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"gym-api/internal/modules/auth/models"
-	"gym-api/internal/modules/shared/errors"
-	"gym-api/internal/modules/shared/utils"
+	"gym-api/internal/utils/auth"
+	"gym-api/internal/utils/errors"
 )
 
 func (s AuthService) RefreshToken(input models.RefreshTokenRequest) (models.TokenResponse, error) {
-	result, err := utils.ParseToken(input.RefreshToken)
+	result, err := auth.ParseToken(input.RefreshToken)
 	if err != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusUnauthorized).
@@ -35,7 +35,7 @@ func (s AuthService) RefreshToken(input models.RefreshTokenRequest) (models.Toke
 	// One day expiration
 	expiresAtRefresh := 24 * time.Hour
 
-	token, errToken := utils.GenerateToken(session.ID, expiresAtToken)
+	token, errToken := auth.GenerateToken(session.ID, expiresAtToken)
 	if errToken != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
@@ -45,7 +45,7 @@ func (s AuthService) RefreshToken(input models.RefreshTokenRequest) (models.Toke
 			SetError(err)
 	}
 
-	tokenRefresh, errTokenRefresh := utils.GenerateToken(session.ID, expiresAtRefresh)
+	tokenRefresh, errTokenRefresh := auth.GenerateToken(session.ID, expiresAtRefresh)
 	if errTokenRefresh != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).

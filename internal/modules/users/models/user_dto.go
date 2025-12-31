@@ -1,4 +1,4 @@
-package users
+package models
 
 // Response DTO
 type UserResponse struct {

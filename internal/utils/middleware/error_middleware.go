@@ -1,9 +1,8 @@
 package middleware
 
 import (
+	"gym-api/internal/utils/errors"
 	"net/http"
-
-	"gym-api/internal/errors"
 
 	"github.com/gin-gonic/gin"
 )

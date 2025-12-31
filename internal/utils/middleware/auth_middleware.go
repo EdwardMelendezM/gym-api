@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"gym-api/internal/ent"
-	"gym-api/internal/modules/shared/utils"
+	"gym-api/internal/utils/auth"
 )
 
 const sessionKey = "session"
@@ -30,7 +30,7 @@ func AuthMiddleware(sessions repository.SessionRepository) gin.HandlerFunc {
 			return
 		}
 
-		claims, err := utils.ParseToken(parts[1])
+		claims, err := auth.ParseToken(parts[1])
 		if err != nil {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

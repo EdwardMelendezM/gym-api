@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 	"gym-api/internal/modules/sessions/models"
-	"gym-api/internal/modules/shared/errors"
+	"gym-api/internal/utils/errors"
 	"net/http"
 )
 

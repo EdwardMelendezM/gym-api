@@ -3,7 +3,7 @@ package impl
 import (
 	"gym-api/internal/modules/auth/models"
 	"gym-api/internal/modules/sessions/repository"
-	"gym-api/internal/modules/users"
+	repository2 "gym-api/internal/modules/users/repository"
 )
 
 type Service interface {
@@ -13,12 +13,12 @@ type Service interface {
 }
 
 type AuthService struct {
-	users    users.Repository
+	users    repository2.Repository
 	sessions repository.SessionRepository
 }
 
 func NewAuthService(
-	usersRepo users.Repository,
+	usersRepo repository2.Repository,
 	sessionsRepo repository.SessionRepository,
 ) Service {
 	return &AuthService{

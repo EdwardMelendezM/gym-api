@@ -2,19 +2,19 @@ package impl
 
 import (
 	models2 "gym-api/internal/modules/sessions/models"
+	models3 "gym-api/internal/modules/users/models"
+	"gym-api/internal/utils/auth"
 	"net/http"
 	"time"
 
 	"gym-api/internal/modules/auth/models"
-	"gym-api/internal/modules/shared/errors"
-	"gym-api/internal/modules/shared/utils"
-	"gym-api/internal/modules/users"
+	"gym-api/internal/utils/errors"
 
 	"github.com/google/uuid"
 )
 
 func (s AuthService) Register(input models.RegisterRequest) (models.TokenResponse, error) {
-	hash, err := utils.HashPassword(input.Password)
+	hash, err := auth.HashPassword(input.Password)
 	if err != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
@@ -26,7 +26,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 
 	fullName := input.FirstName + " " + input.LastName
 
-	user, err := s.users.Create(users.User{
+	user, err := s.users.Create(models3.User{
 		FirstName: &input.FirstName,
 		FullName:  &fullName,
 		LastName:  &input.LastName,
@@ -63,7 +63,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 	// One day expiration
 	expiresAtRefresh := 24 * time.Hour
 
-	token, errToken := utils.GenerateToken(created.ID, expiresAtToken)
+	token, errToken := auth.GenerateToken(created.ID, expiresAtToken)
 	if errToken != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
@@ -73,7 +73,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 			SetError(errToken)
 	}
 
-	tokenRefresh, errTokenRefresh := utils.GenerateToken(created.ID, expiresAtRefresh)
+	tokenRefresh, errTokenRefresh := auth.GenerateToken(created.ID, expiresAtRefresh)
 	if errTokenRefresh != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).

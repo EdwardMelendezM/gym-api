@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 
 	"gym-api/internal/modules/auth/models"
-	"gym-api/internal/modules/shared/errors"
-	"gym-api/internal/modules/shared/utils"
+	auth "gym-api/internal/utils/auth"
+	"gym-api/internal/utils/errors"
 )
 
 func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, error) {
@@ -22,7 +22,7 @@ func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, err
 			SetMessage("invalid credentials")
 	}
 
-	if !utils.ComparePassword(user.Password, input.Password) {
+	if !auth.ComparePassword(user.Password, input.Password) {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusUnauthorized).
 			SetLayer("auth.service").
@@ -51,7 +51,7 @@ func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, err
 	// One day expiration
 	expiresAtRefresh := 24 * time.Hour
 
-	token, errToken := utils.GenerateToken(created.ID, expiresAtToken)
+	token, errToken := auth.GenerateToken(created.ID, expiresAtToken)
 	if errToken != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
@@ -61,7 +61,7 @@ func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, err
 			SetError(err)
 	}
 
-	tokenRefresh, errTokenRefresh := utils.GenerateToken(created.ID, expiresAtRefresh)
+	tokenRefresh, errTokenRefresh := auth.GenerateToken(created.ID, expiresAtRefresh)
 	if errTokenRefresh != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).

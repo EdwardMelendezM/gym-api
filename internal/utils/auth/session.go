@@ -1,4 +1,4 @@
-package utils
+package auth
 
 import (
 	"gym-api/internal/modules/sessions/models"

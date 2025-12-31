@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"gym-api/internal/modules/shared/pagination"
+	"gym-api/internal/utils/pagination"
 
 	"github.com/gin-gonic/gin"
 )

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"gym-api/internal/modules/auth/models"
-	"gym-api/internal/modules/shared/errors"
+	"gym-api/internal/utils/errors"
 )
 
 // RefreshToken Refresh token godoc

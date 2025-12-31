@@ -1,14 +1,14 @@
 package main
 
 import (
-	"gym-api/internal/modules/shared/database"
-	middleware2 "gym-api/internal/modules/shared/middleware"
-	"net/http"
-	"os"
-
 	_ "gym-api/docs"
 	"gym-api/internal/modules/auth"
 	"gym-api/internal/modules/users"
+	"gym-api/internal/utils/config"
+	"net/http"
+
+	"gym-api/internal/utils/database"
+	middleware2 "gym-api/internal/utils/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -35,15 +35,8 @@ func main() {
 	// Create Gin engine (modern default: logger + recovery)
 	r := gin.Default()
 
-	// Database connection
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
-		panic("DATABASE_URL environment variable is not set")
-	}
-	//secret := os.Getenv("SECRET_KEY")
-	//secret := "supersecretkey"
-	// Database client
-	client := database.NewEntClient(dsn)
+	cfg := config.LoadConfig()
+	client := database.NewEntClient(cfg.DatabaseURL)
 
 	// middlewares base
 	r.Use(cors.New(cors.Config{
