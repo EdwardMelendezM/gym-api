@@ -26,6 +26,14 @@ func Respond(c *gin.Context, err error) {
 			)
 		}
 
+		if appErr.Code == "VALIDATION_ERROR" {
+			c.JSON(appErr.Status, gin.H{
+				"code":   appErr.Code,
+				"errors": appErr.Fields,
+			})
+			return
+		}
+
 		c.JSON(appErr.Status, gin.H{
 			"message": appErr.Message,
 			"code":    appErr.Code,

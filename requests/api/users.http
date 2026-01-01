@@ -1,10 +1,10 @@
 ### Create user
 POST http://localhost:8080/api/v1/users
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiJiMTRkYTdjNC0zNDg4LTRkNTAtYjUyYy1hMzNjYmE1YTk2NmUiLCJleHAiOjE3NjcyOTU3NTR9.YjZQ1lx6Ni6_DYK1z7Uu3c_yyN7tC4j1fRn1pB0P5ng
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIwNzBmZDU1OS00NmY3LTRkZDAtYjQwMS0wOTAzM2Q2MjkxNTMiLCJleHAiOjE3NjczMDMwMDN9.QtTzsiO2887jVBL8lBZ30GJiurFMsI-6mTCJBN3yNcc
 
 {
-  "name": "Pedro Castillo Added 3",
+  "name": "Pedro Castillo Added 4",
   "email": "pedro.castillo2@example.com"
 }
 

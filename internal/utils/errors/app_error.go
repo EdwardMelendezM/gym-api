@@ -5,12 +5,18 @@ type AppError struct {
 	Status   int
 	Layer    string
 	Message  string
+	Fields   map[string]string
 	Function string
 	Err      error
 }
 
 func New() *AppError {
 	return &AppError{}
+}
+
+func (e *AppError) SetFields(fields map[string]string) *AppError {
+	e.Fields = fields
+	return e
 }
 
 func (e *AppError) SetCode(code string) *AppError {

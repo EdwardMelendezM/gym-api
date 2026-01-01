@@ -25,7 +25,7 @@ func (h *UserHandler) Create(c *gin.Context) {
 	var req models.CreateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		errors.Respond(c, err)
+		errors.Respond(c, errors.FromValidation(err))
 		return
 	}
 
