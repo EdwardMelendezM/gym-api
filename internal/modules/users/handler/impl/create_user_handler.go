@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Create godoc
+// @Summary Create a new user
+// @Description Creates a new user in the system
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param user body models.CreateUserRequest true "User creation payload"
+// @Success 201 {object} models.UserResponse
+// @Failure 400 {object} errors.ErrorResponse "Invalid request body"
+// @Failure 409 {object} errors.ErrorResponse "User already exists"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Security BearerAuth
+// @Router /api/v1/users [post]
 func (h *UserHandler) Create(c *gin.Context) {
 	var req models.CreateUserRequest
 

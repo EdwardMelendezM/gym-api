@@ -4,7 +4,7 @@ import (
 	"context"
 	"gym-api/internal/ent"
 	"gym-api/internal/ent/user"
-	"gym-api/internal/modules/shared/pagination"
+	"gym-api/internal/utils/pagination"
 )
 
 func (r *entRepository) GetAll(ctx context.Context, p pagination.Params) ([]*ent.User, int, error) {

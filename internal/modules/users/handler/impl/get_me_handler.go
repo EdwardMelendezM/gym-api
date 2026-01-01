@@ -9,6 +9,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetMe godoc
+// @Summary Get current authenticated user
+// @Description Returns the authenticated user's profile using the access token
+// @Tags Users
+// @Produce json
+// @Success 200 {object} models.UserResponse
+// @Failure 401 {object} errors.ErrorResponse "User not authenticated"
+// @Failure 404 {object} errors.ErrorResponse "User not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Security BearerAuth
+// @Router /api/v1/users/me [get]
 func (h *UserHandler) GetMe(c *gin.Context) {
 	session, ok := auth.GetSession(c)
 	if !ok {

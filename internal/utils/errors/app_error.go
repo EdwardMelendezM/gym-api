@@ -1,6 +1,7 @@
 package errors
 
 type AppError struct {
+	Code     string
 	Status   int
 	Layer    string
 	Message  string
@@ -10,6 +11,11 @@ type AppError struct {
 
 func New() *AppError {
 	return &AppError{}
+}
+
+func (e *AppError) SetCode(code string) *AppError {
+	e.Code = code
+	return e
 }
 
 func (e *AppError) SetStatus(status int) *AppError {

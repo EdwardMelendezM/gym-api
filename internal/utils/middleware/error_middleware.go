@@ -2,32 +2,19 @@ package middleware
 
 import (
 	"gym-api/internal/utils/errors"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func ErrorHandler() gin.HandlerFunc {
+func ErrorMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
 
-		last := c.Errors.Last()
-		if last == nil {
+		if len(c.Errors) == 0 {
 			return
 		}
 
-		if appErr, ok := last.Err.(*errors.AppError); ok {
-			c.JSON(appErr.Status, gin.H{
-				"message":  appErr.Message,
-				"layer":    appErr.Layer,
-				"function": appErr.Function,
-			})
-			return
-		}
-
-		// fallback
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": "internal server error",
-		})
+		err := c.Errors.Last().Err
+		errors.Respond(c, err)
 	}
 }

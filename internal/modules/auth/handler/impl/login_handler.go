@@ -15,9 +15,13 @@ import (
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param login body LoginRequest true "Login request"
-// @Success 200 {object} AuthResponse
-// @Failure 400 {object} errors.AppError
+// @Param login body models.LoginRequest true "Login request"
+// @Success 200 {object} models.AuthResponse
+// @Failure 400 {object} errors.ErrorResponse
+// @Failure 401 {object} errors.ErrorResponse
+// @Failure 403 {object} errors.ErrorResponse
+// @Failure 404 {object} errors.ErrorResponse
+// @Failure 500 {object} errors.ErrorResponse
 // @Router /api/v1/auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var input models.LoginRequest

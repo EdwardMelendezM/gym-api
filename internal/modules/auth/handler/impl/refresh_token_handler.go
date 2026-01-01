@@ -9,18 +9,21 @@ import (
 	"gym-api/internal/utils/errors"
 )
 
-// RefreshToken Refresh token godoc
+// RefreshToken godoc
 // @Summary Refresh access token
-// @Description Refresh access token using refresh token
+// @Description Generates a new access token using a valid refresh token
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Param refresh body RefreshTokenRequest true "Refresh token request"
-// @Success 200 {object} AuthResponse
-// @Failure 400 {object} errors.AppError
-// @Router /auth/refresh-token [post]
+// @Param refresh body models.RefreshTokenRequest true "Refresh token payload"
+// @Success 200 {object} models.AuthResponse
+// @Failure 400 {object} errors.ErrorResponse "Invalid request or token"
+// @Failure 401 {object} errors.ErrorResponse "Unauthorized"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Router /api/v1/auth/refresh-token [post]
 func (h *AuthHandler) RefreshToken(c *gin.Context) {
 	var input models.RefreshTokenRequest
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		errors.Respond(c, err)
 		return

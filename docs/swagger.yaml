@@ -1,34 +1,71 @@
 basePath: /
 definitions:
-  auth.AuthResponse:
+  errors.ErrorResponse:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  models.AuthResponse:
     properties:
       accessToken:
         type: string
       refreshToken:
         type: string
     type: object
-  auth.LoginRequest:
+  models.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+    type: object
+  models.LoginRequest:
     properties:
       email:
         type: string
       password:
         type: string
     type: object
-  auth.RefreshTokenRequest:
+  models.RefreshTokenRequest:
     properties:
       refreshToken:
         type: string
     type: object
-  errors.AppError:
+  models.UserListResponse:
     properties:
-      err: {}
-      function:
+      data:
+        items:
+          $ref: '#/definitions/models.UserResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/pagination.Meta'
+    type: object
+  models.UserResponse:
+    properties:
+      email:
         type: string
-      layer:
+      firstName:
         type: string
-      message:
+      id:
         type: string
-      status:
+      lastName:
+        type: string
+    type: object
+  pagination.Meta:
+    properties:
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+      totalPages:
         type: integer
     type: object
 host: localhost:8080
@@ -56,19 +93,69 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/auth.LoginRequest'
+          $ref: '#/definitions/models.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.AuthResponse'
+            $ref: '#/definitions/models.AuthResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.AppError'
+            $ref: '#/definitions/errors.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
       summary: Login user
+      tags:
+      - Auth
+  /api/v1/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Generates a new access token using a valid refresh token
+      parameters:
+      - description: Refresh token payload
+        in: body
+        name: refresh
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.AuthResponse'
+        "400":
+          description: Invalid request or token
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      summary: Refresh access token
       tags:
       - Auth
   /api/v1/auth/register:
@@ -82,45 +169,169 @@ paths:
         name: login
         required: true
         schema:
-          $ref: '#/definitions/auth.LoginRequest'
+          $ref: '#/definitions/models.LoginRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.AuthResponse'
+            $ref: '#/definitions/models.AuthResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/errors.AppError'
+            $ref: '#/definitions/errors.ErrorResponse'
       summary: Register user
       tags:
       - Auth
-  /auth/refresh-token:
-    post:
-      consumes:
-      - application/json
-      description: Refresh access token using refresh token
+  /api/v1/users:
+    get:
+      description: Returns a paginated list of users
       parameters:
-      - description: Refresh token request
-        in: body
-        name: refresh
-        required: true
-        schema:
-          $ref: '#/definitions/auth.RefreshTokenRequest'
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: pageSize
+        type: integer
+      - description: Search text
+        in: query
+        name: search
+        type: string
+      - description: Field to order by
+        in: query
+        name: orderBy
+        type: string
+      - description: Sort direction (asc|desc)
+        in: query
+        name: order
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.AuthResponse'
+            $ref: '#/definitions/models.UserListResponse'
         "400":
-          description: Bad Request
+          description: Invalid query parameters
           schema:
-            $ref: '#/definitions/errors.AppError'
-      summary: Refresh access token
+            $ref: '#/definitions/errors.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List users
       tags:
-      - Auth
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user in the system
+      parameters:
+      - description: User creation payload
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "409":
+          description: User already exists
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new user
+      tags:
+      - Users
+  /api/v1/users/{id}:
+    get:
+      description: Returns a user by its unique identifier
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "400":
+          description: Missing or invalid user id
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - Users
+  /api/v1/users/me:
+    get:
+      description: Returns the authenticated user's profile using the access token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "401":
+          description: User not authenticated
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/errors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get current authenticated user
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

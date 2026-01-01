@@ -8,6 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetById godoc
+// @Summary Get user by ID
+// @Description Returns a user by its unique identifier
+// @Tags Users
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} models.UserResponse
+// @Failure 400 {object} errors.ErrorResponse "Missing or invalid user id"
+// @Failure 404 {object} errors.ErrorResponse "User not found"
+// @Failure 500 {object} errors.ErrorResponse "Internal server error"
+// @Security BearerAuth
+// @Router /api/v1/users/{id} [get]
 func (h *UserHandler) GetById(c *gin.Context) {
 	id := c.Param("id")
 

@@ -10,7 +10,6 @@ import (
 	"gym-api/internal/utils/database"
 	middleware2 "gym-api/internal/utils/middleware"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -31,24 +30,24 @@ import (
 // @host localhost:8080
 // @BasePath /
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
 func main() {
 	// Create Gin engine (modern default: logger + recovery)
 	r := gin.Default()
 
+	// Load configuration and initialize database client
 	cfg := config.LoadConfig()
 	client := database.NewEntClient(cfg.DatabaseURL)
 
 	// middlewares base
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://mi-frontend.com"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Authorization", "Content-Type"},
-		AllowCredentials: true,
-	}))
+	r.Use(middleware2.CorsMiddleware(cfg.AllowOrigins))
 	r.Use(gin.Recovery())
 	r.Use(middleware2.RequestLogger())
-	r.Use(middleware2.ErrorHandler())
-	//r.Use(middleware.AuthMiddleware())
+	r.Use(middleware2.ErrorMiddleware())
+	r.Use(middleware2.RequestIDMiddleware())
 
 	/// versioning
 	api := r.Group("/api")
