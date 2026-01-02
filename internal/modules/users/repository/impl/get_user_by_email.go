@@ -9,7 +9,7 @@ import (
 	"gym-api/internal/utils/errors"
 )
 
-func (r *entRepository) FindByEmail(email string) (models.User, error) {
+func (r *entRepository) FindUserByEmail(email string) (models.User, error) {
 	row, err := r.client.User.
 		Query().
 		Where(user.EmailEQ(email)).
@@ -19,7 +19,7 @@ func (r *entRepository) FindByEmail(email string) (models.User, error) {
 		return models.User{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
 			SetLayer("users.repository").
-			SetFunction("FindByEmail").
+			SetFunction("FindUserByEmail").
 			SetMessage("failed to find by email").
 			SetError(err)
 	}

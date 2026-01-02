@@ -7,9 +7,9 @@ import (
 )
 
 type Handler interface {
-	List(ctx *gin.Context)
-	Create(ctx *gin.Context)
-	GetById(ctx *gin.Context)
+	GetUsersPaginated(ctx *gin.Context)
+	CreateUser(ctx *gin.Context)
+	GetUserById(ctx *gin.Context)
 	GetMe(ctx *gin.Context)
 }
 

@@ -35,7 +35,7 @@ import (
 // @name Authorization
 
 func main() {
-	// Create Gin engine (modern default: logger + recovery)
+	// CreateUser Gin engine (modern default: logger + recovery)
 	r := gin.Default()
 
 	// Load configuration and initialize database client

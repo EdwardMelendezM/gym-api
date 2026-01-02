@@ -19,7 +19,7 @@ func (r *sessionEntRepository) Create(s models.Session) (models.Session, error) 
 		return models.Session{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
 			SetLayer("sessions.repository").
-			SetFunction("Create").
+			SetFunction("CreateUser").
 			SetMessage("failed to create session").
 			SetError(err)
 	}

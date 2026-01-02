@@ -2,14 +2,16 @@ package repository
 
 import (
 	"context"
+
 	"gym-api/internal/ent"
 	"gym-api/internal/modules/users/models"
 	"gym-api/internal/utils/pagination"
 )
 
 type Repository interface {
-	GetAll(ctx context.Context, p pagination.Params) ([]*ent.User, int, error)
-	Create(user models.User) (models.User, error)
-	FindByEmail(email string) (models.User, error)
-	FindById(id string) (models.User, error)
+	GetUsersPaginated(ctx context.Context, p pagination.Params) ([]*ent.User, error)
+	GetTotalUsers(ctx context.Context) (int, error)
+	CreateUser(user models.User) (models.User, error)
+	FindUserByEmail(email string) (models.User, error)
+	FindUserById(id string) (models.User, error)
 }

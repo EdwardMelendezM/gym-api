@@ -14,7 +14,7 @@ func NewEntClient(dsn string) *ent.Client {
 		log.Fatalf("failed opening connection: %v", err)
 	}
 
-	//if errCreated := client.Schema.Create(context.Background()); errCreated != nil {
+	//if errCreated := client.Schema.CreateUser(context.Background()); errCreated != nil {
 	//	log.Fatalf("failed creating schema: %v", err)
 	//}
 

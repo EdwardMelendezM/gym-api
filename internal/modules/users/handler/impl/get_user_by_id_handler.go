@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetById godoc
+// GetUserById godoc
 // @Summary Get user by ID
 // @Description Returns a user by its unique identifier
 // @Tags Users
@@ -20,14 +20,14 @@ import (
 // @Failure 500 {object} errors.ErrorResponse "Internal server error"
 // @Security BearerAuth
 // @Router /api/v1/users/{id} [get]
-func (h *UserHandler) GetById(c *gin.Context) {
+func (h *UserHandler) GetUserById(c *gin.Context) {
 	id := c.Param("id")
 
 	if id == "" {
 		errors.Respond(c, errors.New().
 			SetStatus(http.StatusBadRequest).
 			SetLayer("users.handler").
-			SetFunction("GetById").
+			SetFunction("GetUserById").
 			SetMessage("id parameter is required"))
 		return
 	}

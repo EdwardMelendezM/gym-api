@@ -9,7 +9,7 @@ import (
 )
 
 type Service interface {
-	ListUsers(ctx context.Context, p pagination.Params) (*pagination.Result[models.UserResponse], error)
+	GetUsersPaginated(ctx context.Context, p pagination.Params) (*pagination.Result[models.UserResponse], error)
 	CreateUser(input models.CreateUserRequest) (models.User, error)
 	GetUserById(id string) (models.User, error)
 }

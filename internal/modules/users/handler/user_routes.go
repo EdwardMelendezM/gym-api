@@ -8,8 +8,8 @@ import (
 )
 
 func UserRoutes(r *gin.RouterGroup, handler impl.Handler) {
-	r.GET("/users", paginationMiddleware.PaginationMiddleware(), handler.List)
-	r.POST("/users", handler.Create)
+	r.GET("/users", paginationMiddleware.PaginationMiddleware(), handler.GetUsersPaginated)
+	r.POST("/users", handler.CreateUser)
 	r.GET("/users/me", handler.GetMe)
-	r.GET("/users/:id", handler.GetById)
+	r.GET("/users/:id", handler.GetUserById)
 }

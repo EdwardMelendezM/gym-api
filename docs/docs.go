@@ -272,7 +272,7 @@ const docTemplate = `{
                 "tags": [
                     "Users"
                 ],
-                "summary": "Create a new user",
+                "summary": "CreateUser a new user",
                 "parameters": [
                     {
                         "description": "User creation payload",
@@ -433,29 +433,43 @@ const docTemplate = `{
         },
         "models.CreateUserRequest": {
             "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "last_name",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
-                "firstName": {
-                    "type": "string"
+                "first_name": {
+                    "type": "string",
+                    "minLength": 2
                 },
-                "lastName": {
-                    "type": "string"
+                "last_name": {
+                    "type": "string",
+                    "minLength": 2
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 8
                 }
             }
         },
         "models.LoginRequest": {
             "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "minLength": 8
                 }
             }
         },

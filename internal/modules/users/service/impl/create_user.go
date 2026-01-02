@@ -15,7 +15,7 @@ func (s *service) CreateUser(input models.CreateUserRequest) (models.User, error
 		Password:  input.Password,
 	}
 
-	created, err := s.repo.Create(user)
+	created, err := s.repo.CreateUser(user)
 	if err != nil {
 		return models.User{}, errors.New().
 			SetStatus(http.StatusBadRequest).

@@ -7,7 +7,7 @@ import (
 	"gym-api/internal/utils/pagination"
 )
 
-func (r *entRepository) GetAll(ctx context.Context, p pagination.Params) ([]*ent.User, int, error) {
+func (r *entRepository) GetUsersPaginated(ctx context.Context, p pagination.Params) ([]*ent.User, error) {
 	query := r.client.User.Query()
 
 	// 🔍 SEARCH
@@ -33,13 +33,6 @@ func (r *entRepository) GetAll(ctx context.Context, p pagination.Params) ([]*ent
 	} else {
 		query = query.Order(ent.Desc(field))
 	}
-
-	// total
-	total, err := query.Clone().Count(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-
 	// pagination
 	users, err := query.
 		Limit(p.PageSize).
@@ -47,8 +40,8 @@ func (r *entRepository) GetAll(ctx context.Context, p pagination.Params) ([]*ent
 		All(ctx)
 
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
 
-	return users, total, nil
+	return users, nil
 }

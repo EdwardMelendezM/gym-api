@@ -8,7 +8,7 @@ import (
 )
 
 func (s *service) GetUserById(id string) (models.User, error) {
-	user, err := s.repo.FindById(id)
+	user, err := s.repo.FindUserById(id)
 	if err != nil {
 		return models.User{}, errors.New().
 			SetStatus(http.StatusNotFound).

@@ -4,13 +4,37 @@ import (
 	"context"
 	"math"
 
+	"golang.org/x/sync/errgroup"
+
+	"gym-api/internal/ent"
 	"gym-api/internal/modules/users/models"
 	"gym-api/internal/utils/pagination"
 )
 
-func (s *service) ListUsers(ctx context.Context, p pagination.Params) (*pagination.Result[models.UserResponse], error) {
-	users, total, err := s.repo.GetAll(ctx, p)
-	if err != nil {
+func (s *service) GetUsersPaginated(ctx context.Context, p pagination.Params) (*pagination.Result[models.UserResponse], error) {
+
+	// declare variables
+	var (
+		users []*ent.User
+		total int
+	)
+
+	// use goroutines
+	g, ctx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		var err error
+		users, err = s.repo.GetUsersPaginated(ctx, p)
+		return err
+	})
+
+	g.Go(func() error {
+		var err error
+		total, err = s.repo.GetTotalUsers(ctx)
+		return err
+	})
+
+	if err := g.Wait(); err != nil {
 		return nil, err
 	}
 

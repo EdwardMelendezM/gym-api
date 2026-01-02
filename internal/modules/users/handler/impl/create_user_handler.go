@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Create godoc
-// @Summary Create a new user
+// CreateUser godoc
+// @Summary CreateUser a new user
 // @Description Creates a new user in the system
 // @Tags Users
 // @Accept json
@@ -21,7 +21,7 @@ import (
 // @Failure 500 {object} errors.ErrorResponse "Internal server error"
 // @Security BearerAuth
 // @Router /api/v1/users [post]
-func (h *UserHandler) Create(c *gin.Context) {
+func (h *UserHandler) CreateUser(c *gin.Context) {
 	var req models.CreateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {

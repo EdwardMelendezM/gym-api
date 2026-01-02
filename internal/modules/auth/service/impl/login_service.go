@@ -13,7 +13,7 @@ import (
 )
 
 func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, error) {
-	user, err := s.users.FindByEmail(input.Email)
+	user, err := s.users.FindUserByEmail(input.Email)
 	if err != nil {
 		return models.TokenResponse{}, errors.WithContext(
 			errorMessage.ErrInvalidCredentials,

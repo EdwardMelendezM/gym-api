@@ -8,7 +8,7 @@ import (
 	"gym-api/internal/utils/errors"
 )
 
-func (r *entRepository) Create(user models.User) (models.User, error) {
+func (r *entRepository) CreateUser(user models.User) (models.User, error) {
 	row, err := r.client.User.
 		Create().
 		SetNillableFirstName(user.FirstName).
@@ -22,7 +22,7 @@ func (r *entRepository) Create(user models.User) (models.User, error) {
 		return models.User{}, errors.New().
 			SetStatus(http.StatusInternalServerError).
 			SetLayer("users.repository").
-			SetFunction("Create").
+			SetFunction("CreateUser").
 			SetMessage("failed to insert user").
 			SetError(err)
 	}

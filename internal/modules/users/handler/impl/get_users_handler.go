@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// List godoc
+// GetUsersPaginated godoc
 // @Summary List users
 // @Description Returns a paginated list of users
 // @Tags Users
@@ -26,11 +26,11 @@ import (
 // @Failure 500 {object} errors.ErrorResponse "Internal server error"
 // @Security BearerAuth
 // @Router /api/v1/users [get]
-func (h *UserHandler) List(c *gin.Context) {
+func (h *UserHandler) GetUsersPaginated(c *gin.Context) {
 	ctx := c.Request.Context()
 	p := c.MustGet(pagination.Key).(pagination.Params)
 
-	result, err := h.service.ListUsers(ctx, p)
+	result, err := h.service.GetUsersPaginated(ctx, p)
 	if err != nil {
 		errors.Respond(c, err)
 		return

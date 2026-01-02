@@ -18,19 +18,31 @@ definitions:
     properties:
       email:
         type: string
-      firstName:
+      first_name:
+        minLength: 2
         type: string
-      lastName:
+      last_name:
+        minLength: 2
         type: string
       password:
+        minLength: 8
         type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - password
     type: object
   models.LoginRequest:
     properties:
       email:
         type: string
       password:
+        minLength: 8
         type: string
+    required:
+    - email
+    - password
     type: object
   models.RefreshTokenRequest:
     properties:
@@ -266,7 +278,7 @@ paths:
             $ref: '#/definitions/errors.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Create a new user
+      summary: CreateUser a new user
       tags:
       - Users
   /api/v1/users/{id}:

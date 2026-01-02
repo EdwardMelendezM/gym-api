@@ -140,7 +140,7 @@ func If(hk ent.Hook, cond Condition) ent.Hook {
 
 // On executes the given hook only for the given operation.
 //
-//	hook.On(Log, ent.Delete|ent.Create)
+//	hook.On(Log, ent.Delete|ent.CreateUser)
 func On(hk ent.Hook, op ent.Op) ent.Hook {
 	return If(hk, HasOp(op))
 }

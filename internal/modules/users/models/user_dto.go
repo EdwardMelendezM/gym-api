@@ -10,7 +10,7 @@ type UserResponse struct {
 	Email     string  `json:"email"`
 }
 
-// User List Response for Swagger
+// User GetUsersPaginated Response for Swagger
 type UserListResponse struct {
 	Data []UserResponse  `json:"data"`
 	Meta pagination.Meta `json:"meta"`

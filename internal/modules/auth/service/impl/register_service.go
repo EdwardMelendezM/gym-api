@@ -26,7 +26,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 
 	fullName := input.FirstName + " " + input.LastName
 
-	user, err := s.users.Create(models3.User{
+	user, err := s.users.CreateUser(models3.User{
 		FirstName: &input.FirstName,
 		FullName:  &fullName,
 		LastName:  &input.LastName,
@@ -42,7 +42,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 			SetError(err)
 	}
 
-	// Create session
+	// CreateUser session
 	session := models2.Session{
 		ID:        uuid.NewString(),
 		UserID:    user.ID,
