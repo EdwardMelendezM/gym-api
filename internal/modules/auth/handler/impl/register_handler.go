@@ -22,7 +22,7 @@ import (
 func (h *AuthHandler) Register(c *gin.Context) {
 	var input models.RegisterRequest
 	if err := c.ShouldBindJSON(&input); err != nil {
-		errors.Respond(c, err)
+		errors.Respond(c, errors.FromValidation(err))
 		return
 	}
 

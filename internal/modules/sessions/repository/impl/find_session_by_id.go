@@ -2,22 +2,21 @@ package impl
 
 import (
 	"context"
+	errorMessage "gym-api/internal/modules/sessions/errors"
 	"gym-api/internal/modules/sessions/models"
 	"gym-api/internal/utils/errors"
-	"net/http"
 )
 
-func (r *sessionEntRepository) FindByID(id string) (*models.Session, error) {
+func (r *sessionEntRepository) FindSessionByID(id string) (*models.Session, error) {
 	row, err := r.client.Session.
 		Get(context.Background(), id)
 
 	if err != nil {
-		return nil, errors.New().
-			SetStatus(http.StatusInternalServerError).
-			SetLayer("sessions.repository").
-			SetFunction("FindByID").
-			SetMessage("failed to find by id session").
-			SetError(err)
+		return nil, errors.WithContext(
+			errorMessage.ErrFindSessionById,
+			"sessions.repository",
+			"FindSessionByID",
+		)
 	}
 
 	return &models.Session{

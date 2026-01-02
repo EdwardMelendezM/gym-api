@@ -23,5 +23,5 @@ type TokenResponse struct {
 }
 
 type RefreshTokenRequest struct {
-	RefreshToken string `json:"refreshToken"`
+	RefreshToken string `json:"refreshToken" binding:"required"`
 }

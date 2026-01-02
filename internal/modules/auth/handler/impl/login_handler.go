@@ -25,8 +25,9 @@ import (
 // @Router /api/v1/auth/login [post]
 func (h *AuthHandler) Login(c *gin.Context) {
 	var input models.LoginRequest
+
 	if err := c.ShouldBindJSON(&input); err != nil {
-		errors.Respond(c, err)
+		errors.Respond(c, errors.FromValidation(err))
 		return
 	}
 

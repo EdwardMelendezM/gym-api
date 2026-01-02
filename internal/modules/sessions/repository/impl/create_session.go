@@ -2,12 +2,12 @@ package impl
 
 import (
 	"context"
+	errorMessage "gym-api/internal/modules/sessions/errors"
 	"gym-api/internal/modules/sessions/models"
 	"gym-api/internal/utils/errors"
-	"net/http"
 )
 
-func (r *sessionEntRepository) Create(s models.Session) (models.Session, error) {
+func (r *sessionEntRepository) CreateSession(s models.Session) (models.Session, error) {
 	row, err := r.client.Session.
 		Create().
 		SetID(s.ID).
@@ -16,12 +16,11 @@ func (r *sessionEntRepository) Create(s models.Session) (models.Session, error) 
 		Save(context.Background())
 
 	if err != nil {
-		return models.Session{}, errors.New().
-			SetStatus(http.StatusInternalServerError).
-			SetLayer("sessions.repository").
-			SetFunction("CreateUser").
-			SetMessage("failed to create session").
-			SetError(err)
+		return models.Session{}, errors.WithContext(
+			errorMessage.ErrCreateSession,
+			"sessions.repository",
+			"CreateUser",
+		)
 	}
 
 	return models.Session{

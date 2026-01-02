@@ -1,6 +1,7 @@
 package impl
 
 import (
+	errorMessage "gym-api/internal/modules/auth/errors"
 	models2 "gym-api/internal/modules/sessions/models"
 	models3 "gym-api/internal/modules/users/models"
 	"gym-api/internal/utils/auth"
@@ -16,12 +17,12 @@ import (
 func (s AuthService) Register(input models.RegisterRequest) (models.TokenResponse, error) {
 	hash, err := auth.HashPassword(input.Password)
 	if err != nil {
-		return models.TokenResponse{}, errors.New().
-			SetStatus(http.StatusInternalServerError).
-			SetLayer("auth.service").
-			SetFunction("Register").
-			SetMessage("failed to hash password").
-			SetError(err)
+		return models.TokenResponse{}, errors.WithContext(
+			errorMessage.ErrGenerateHashPassword,
+			"auth.service",
+			"Register",
+		)
+
 	}
 
 	fullName := input.FirstName + " " + input.LastName
@@ -48,7 +49,7 @@ func (s AuthService) Register(input models.RegisterRequest) (models.TokenRespons
 		UserID:    user.ID,
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
-	created, err := s.sessions.Create(session)
+	created, err := s.sessions.CreateSession(session)
 	if err != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusInternalServerError).

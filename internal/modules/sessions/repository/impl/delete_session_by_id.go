@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func (r *sessionEntRepository) Delete(id string) error {
+func (r *sessionEntRepository) DeleteSessionById(id string) error {
 	return r.client.Session.
 		DeleteOneID(id).
 		Exec(context.Background())

@@ -18,7 +18,7 @@ func (s *service) CreateUser(input models.CreateUserRequest) (models.User, error
 	created, err := s.repo.CreateUser(user)
 	if err != nil {
 		return models.User{}, errors.New().
-			SetStatus(http.StatusBadRequest).
+			SetStatus(http.StatusInternalServerError).
 			SetLayer("users.service").
 			SetFunction("CreateUser").
 			SetMessage(err.Error())

@@ -36,12 +36,10 @@ func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, err
 		ExpiresAt: time.Now().Add(24 * time.Hour),
 	}
 
-	created, err := s.sessions.Create(session)
+	created, err := s.sessions.CreateSession(session)
 	if err != nil {
-		return models.TokenResponse{}, errors.WrapWithContext(
-			err,
-			"ERROR_SESSION_CREATION",
-			"failed to create session",
+		return models.TokenResponse{}, errors.WithContext(
+			errorMessage.ErrInvalidCredentials,
 			"auth.service",
 			"Login",
 		)
@@ -49,10 +47,8 @@ func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, err
 
 	token, err := auth.GenerateToken(created.ID, time.Hour)
 	if err != nil {
-		return models.TokenResponse{}, errors.WrapWithContext(
-			err,
-			"ERROR_GENERATE_TOKEN",
-			"failed to generate access token",
+		return models.TokenResponse{}, errors.WithContext(
+			errorMessage.ErrGenerateToken,
 			"auth.service",
 			"Login",
 		)
@@ -60,10 +56,8 @@ func (s AuthService) Login(input models.LoginRequest) (models.TokenResponse, err
 
 	refresh, err := auth.GenerateToken(created.ID, 24*time.Hour)
 	if err != nil {
-		return models.TokenResponse{}, errors.WrapWithContext(
-			err,
-			"ERROR_GENERATE_TOKEN",
-			"failed to generate refresh token",
+		return models.TokenResponse{}, errors.WithContext(
+			errorMessage.ErrGenerateToken,
 			"auth.service",
 			"Login",
 		)

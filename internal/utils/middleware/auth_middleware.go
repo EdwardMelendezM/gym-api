@@ -36,7 +36,7 @@ func AuthMiddleware(sessions repository.SessionRepository) gin.HandlerFunc {
 			return
 		}
 
-		session, err := sessions.FindByID(claims.SessionID)
+		session, err := sessions.FindSessionByID(claims.SessionID)
 		if err != nil || session.ExpiresAt.Before(time.Now()) {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

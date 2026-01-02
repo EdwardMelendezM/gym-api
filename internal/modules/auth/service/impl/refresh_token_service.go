@@ -20,7 +20,7 @@ func (s AuthService) RefreshToken(input models.RefreshTokenRequest) (models.Toke
 			SetError(err)
 	}
 
-	session, err := s.sessions.FindByID(result.SessionID)
+	session, err := s.sessions.FindSessionByID(result.SessionID)
 	if err != nil {
 		return models.TokenResponse{}, errors.New().
 			SetStatus(http.StatusUnauthorized).

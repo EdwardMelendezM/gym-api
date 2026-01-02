@@ -2,19 +2,22 @@ package errors
 
 import "gym-api/internal/utils/errors"
 
+var serviceBase = errors.ServiceError("auth.service")
+var repositoryBase = errors.ServiceError("auth.repository")
+
 var (
 	ErrInvalidCredentials = errors.Unauthorized(
-		"INVALID_CREDENTIALS",
+		ErrInvalidCredentialsCode,
 		"invalid credentials",
 	)
 
-	ErrTokenExpired = errors.Unauthorized(
-		"TOKEN_EXPIRED",
-		"token expired",
+	ErrGenerateToken = errors.Unauthorized(
+		ErrGenerateTokenCode,
+		"invalid token",
 	)
 
-	ErrSessionNotFound = errors.NotFound(
-		"SESSION_NOT_FOUND",
-		"session not found",
+	ErrGenerateHashPassword = errors.Internal(
+		ErrGenerateHashCode,
+		"invalid token",
 	)
 )
