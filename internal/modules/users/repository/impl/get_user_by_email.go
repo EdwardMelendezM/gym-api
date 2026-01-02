@@ -2,9 +2,8 @@ package impl
 
 import (
 	"context"
-	"net/http"
-
 	"gym-api/internal/ent/user"
+	authError "gym-api/internal/modules/auth/errors"
 	"gym-api/internal/modules/users/models"
 	"gym-api/internal/utils/errors"
 )
@@ -16,12 +15,16 @@ func (r *entRepository) FindUserByEmail(email string) (models.User, error) {
 		Only(context.Background())
 
 	if err != nil {
-		return models.User{}, errors.New().
-			SetStatus(http.StatusInternalServerError).
-			SetLayer("users.repository").
+		return models.User{}, errors.Internal(string(errors.CodeInternalError), "error finding user by email").
+			SetLayer(string(errors.LayerRepository)).
 			SetFunction("FindUserByEmail").
-			SetMessage("failed to find by email").
 			SetError(err)
+	}
+
+	if row == nil {
+		return models.User{}, authError.ErrorUserNotFound.
+			SetLayer(string(errors.LayerRepository)).
+			SetFunction("FindUserByEmail")
 	}
 
 	return models.User{

@@ -1,5 +1,24 @@
 package errors
 
+type Layers string
+
+const (
+	LayerService    Layers = "service"
+	LayerRepository Layers = "repository"
+	LayerHandler    Layers = "handler"
+)
+
+type DefaultCodes string
+
+const (
+	CodeInternalError DefaultCodes = "INTERNAL_ERROR"
+	CodeBadRequest    DefaultCodes = "BAD_REQUEST"
+	CodeUnauthorized  DefaultCodes = "UNAUTHORIZED"
+	CodeForbidden     DefaultCodes = "FORBIDDEN"
+	CodeNotFound      DefaultCodes = "NOT_FOUND"
+	CodeConflict      DefaultCodes = "CONFLICT"
+)
+
 type AppError struct {
 	Code     string
 	Status   int

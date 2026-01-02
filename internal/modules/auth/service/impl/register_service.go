@@ -1,14 +1,14 @@
 package impl
 
 import (
-	errorMessage "gym-api/internal/modules/auth/errors"
-	models2 "gym-api/internal/modules/sessions/models"
-	models3 "gym-api/internal/modules/users/models"
-	"gym-api/internal/utils/auth"
 	"net/http"
 	"time"
 
+	authError "gym-api/internal/modules/auth/errors"
 	"gym-api/internal/modules/auth/models"
+	models2 "gym-api/internal/modules/sessions/models"
+	models3 "gym-api/internal/modules/users/models"
+	"gym-api/internal/utils/auth"
 	"gym-api/internal/utils/errors"
 
 	"github.com/google/uuid"
@@ -17,16 +17,22 @@ import (
 func (s AuthService) Register(input models.RegisterRequest) (models.TokenResponse, error) {
 	hash, err := auth.HashPassword(input.Password)
 	if err != nil {
-		return models.TokenResponse{}, errors.WithContext(
-			errorMessage.ErrGenerateHashPassword,
-			"auth.service",
-			"Register",
-		)
+		return models.TokenResponse{}, authError.ErrorGenerateHashPassword.
+			SetLayer("auth.service").
+			SetFunction("Register").
+			SetError(err)
 
 	}
 
-	fullName := input.FirstName + " " + input.LastName
+	_, err = s.users.FindUserByEmail(input.Email)
+	if err != nil {
+		return models.TokenResponse{}, authError.ErrUserAlreadyExists.
+			SetLayer("auth.service").
+			SetFunction("Register").
+			SetError(err)
+	}
 
+	fullName := input.FirstName + " " + input.LastName
 	user, err := s.users.CreateUser(models3.User{
 		FirstName: &input.FirstName,
 		FullName:  &fullName,

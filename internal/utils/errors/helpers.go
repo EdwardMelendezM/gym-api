@@ -5,7 +5,7 @@ import "net/http"
 func BadRequest(code, msg string) *AppError {
 	return New().
 		SetStatus(http.StatusBadRequest).
-		SetCode(code).
+		SetCode(string(CodeBadRequest)).
 		SetMessage(msg)
 }
 
@@ -51,12 +51,16 @@ func WithContext(err *AppError, layer, fn string) *AppError {
 }
 
 func Wrap(err error, msg string, code string) *AppError {
-	return Internal(msg, code).SetError(err)
+	return Internal(msg, string(CodeBadRequest)).SetError(err)
 }
 
-func WrapWithContext(err error, code, msg, layer, fn string) *AppError {
-	return Internal(msg, code).
+func WrapWithContext(err error, msg, layer, fn string) *AppError {
+	return Internal(msg, string(CodeInternalError)).
 		SetLayer(layer).
 		SetFunction(fn).
 		SetError(err)
+}
+
+func WrapError(err *AppError) *AppError {
+	return err
 }
